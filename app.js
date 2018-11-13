@@ -154,6 +154,27 @@ io.on('connection', function (socket) {
 //============END SOCKET================
 
 
+//------------MAIL GUN--------------
+//=============SEND MAIL==============
+// var mailgun = require("mailgun-js");
+// var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
+// var DOMAIN = 'fivedesk.tech';
+// var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
+
+// var data = {
+//     from: 'Luong Kien Hao <luongkienhao@fivedesk.tech>',
+//     to: 'hoangnam26101996@gmail.com',
+//     subject: 'Testing mailgun api',
+//     text: 'Đây là nội dung mail được gửi từ mailgun!'
+//   };
+  
+//   mailgun.messages().send(data, function (error, body) {
+//     console.log(body);
+//   });
+//=============END SEND MAIL==============
+
+
+
 //=============RECEIVE MAIL==============
 // app.post('/webhook', multer().none(), function(req, res) {
 //     console.log('req body' );
@@ -171,24 +192,6 @@ io.on('connection', function (socket) {
 //     res.end();
 // });
 //=============END RECEIVE MAIL==========
-
-//=============SEND MAIL==============
-// var mailgun = require("mailgun-js");
-// var api_key = '151f114e127434b1de581715ba40e7aa-c8e745ec-3cf4cbf8';
-// var DOMAIN = 'fivedesk.tech';
-// var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
-
-// var data = {
-//     from: 'Luong Kien Hao <luongkienhao@fivedesk.tech>',
-//     to: 'hoangnam26101996@gmail.com',
-//     subject: 'Testing mailgun api',
-//     text: 'Đây là nội dung mail được gửi từ mailgun!'
-//   };
-  
-//   mailgun.messages().send(data, function (error, body) {
-//     console.log(body);
-//   });
-//=============END SEND MAIL==============
 
 http.listen(4000, function(){
     console.log('listening on *:4000');
