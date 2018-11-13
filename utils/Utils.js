@@ -14,13 +14,13 @@ exports.generateToken = function(user) {
         CompanyName: user.CompanyName
     };
   
-    return token = jwt.sign(u, process.env.JWT_SECRET, {
+    return token = jwt.sign(u, 'team05', {
         expiresIn: 60 * 60 * 24 * 7 // expires in 1 week
     });
 }
 
 exports.verifyToken = function(token){
-    return jwt.verify(token, process.env.JWT_SECRET, function(err, user) {
+    return jwt.verify(token, 'team05', function(err, user) {
         return user;
     });
 }
