@@ -197,7 +197,7 @@ http.listen(4000, function(){
     console.log('listening on *:4000');
   });
 
-var port = process.env.port || 8888;
+var port = process.env.PORT || 8888;
 app.listen(port, () => {
     console.log(`api running on port ${port}`);
 })
