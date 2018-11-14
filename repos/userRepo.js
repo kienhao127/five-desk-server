@@ -28,7 +28,7 @@ exports.updateProfile = function(user){
 }
 
 exports.addUser = function(user){
-    var sql = "INSERT INTO user(Email, FirstName, LastName, UserType, IsActive) VALUES('"+ user.email +"', '" + user.firstname +"', '"+ user.lastname +"', '2', '0')";
+    var sql = "INSERT INTO user(Email, Password, FirstName, LastName, CompanyID, IsDelete, UserType, IsActive) VALUES('"+ user.email +"', '" + user.password + "', '" + user.firstname +"', '"+ user.lastname +"', '" + user.companyID +"', '0', '2', '1')";
     return db.write(sql);
 }
 

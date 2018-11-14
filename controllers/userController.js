@@ -80,7 +80,7 @@ router.post('/register', (req, res) => {
                 company: value.insertId,
                 isdelete: 0,
                 type: 2,
-                isactive: 0
+                isactive: 1
             }
             userRepo.register(u)
                 .then(value => {
@@ -222,6 +222,30 @@ router.post('/getListUser', (req, res) => {
             res.statusCode = 500;
             res.end('View error log on server console');
         })
+})
+
+router.post('/addUser', (req, res) => {
+    var user = {
+        email: req.body.email,
+        password: req.body.password,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        companyID: req.body.companyID,
+    }
+    userRepo.addUser(user)
+    .then(value => {
+        console.log('add user', value);
+        res.statusCode = 201;
+        res.json({
+            returnCode: 1,
+            message: 'success'
+        })
+    })
+    .catch(err => {
+        console.log(err);
+        res.statusCode = 500;
+        res.end('View error log on server console');
+    })
 })
 
 module.exports = router;
