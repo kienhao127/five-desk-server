@@ -157,7 +157,7 @@ io.on('connection', function (socket) {
 //------------MAIL GUN--------------
 //=============SEND MAIL==============
 // var mailgun = require("mailgun-js");
-// var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
+var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
 // var DOMAIN = 'fivedesk.tech';
 // var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
@@ -176,21 +176,21 @@ io.on('connection', function (socket) {
 
 
 //=============RECEIVE MAIL==============
-// app.post('/webhook', multer().none(), function(req, res) {
-//     console.log('req body' );
-//     console.log(JSON.stringify(req.body['event-data']));
+app.post('/webhook', multer().none(), function(req, res) {
+    console.log('req body' );
+    console.log(JSON.stringify(req.body['event-data']));
 
-//     axios.get(req.body['event-data'].storage.url, {
-//         auth: {
-//           username: 'api',
-//           password: api_key
-//         }
-//       }).then(({ data: mail }) => {
-//         console.log(mail)
-//       }, err => cb(err))
+    axios.get(req.body['event-data'].storage.url, {
+        auth: {
+          username: 'api',
+          password: api_key
+        }
+      }).then(({ data: mail }) => {
+        console.log(mail)
+      }, err => cb(err))
   
-//     res.end();
-// });
+    res.end();
+});
 //=============END RECEIVE MAIL==========
 
 http.listen(4000, function(){
