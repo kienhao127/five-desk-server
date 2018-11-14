@@ -182,16 +182,14 @@ app.post('/webhook', multer().any(), function(req, res) {
     console.log(JSON.stringify(req.body['event-data']));
     console.log(req);
     
-    if (req.body['event-data'] != undefined){
-        axios.get(req.body['event-data'].storage.url, {
-            auth: {
-              username: 'api',
-              password: api_key
-            }
-          }).then(({ data: mail }) => {
-            console.log(mail)
-          }, err => cb(err))
-    }
+    axios.get(req.body['event-data'].storage.url, {
+        auth: {
+          username: 'api',
+          password: api_key
+        }
+    }).then(({ data: mail }) => {
+        console.log(mail)
+    }, err => cb(err))
     res.end();
 });
 //=============END RECEIVE MAIL==========
