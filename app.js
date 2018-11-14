@@ -180,15 +180,16 @@ app.post('/webhook', function(req, res) {
     console.log('req body' );
     console.log(JSON.stringify(req.body['event-data']));
 
-    axios.get(req.body['event-data'].storage.url, {
-        auth: {
-          username: 'api',
-          password: api_key
-        }
-      }).then(({ data: mail }) => {
-        console.log(mail)
-      }, err => cb(err))
-  
+    if (req.body['event-data'] != undefined){
+        axios.get(req.body['event-data'].storage.url, {
+            auth: {
+              username: 'api',
+              password: api_key
+            }
+          }).then(({ data: mail }) => {
+            console.log(mail)
+          }, err => cb(err))
+    }
     res.end();
 });
 //=============END RECEIVE MAIL==========
