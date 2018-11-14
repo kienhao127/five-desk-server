@@ -177,10 +177,11 @@ var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
 
 
 //=============RECEIVE MAIL==============
-app.post('/webhook', multer().none(), function(req, res) {
+app.post('/webhook', multer().any(), function(req, res) {
     console.log('req body' );
     console.log(JSON.stringify(req.body['event-data']));
-
+    console.log(req);
+    
     if (req.body['event-data'] != undefined){
         axios.get(req.body['event-data'].storage.url, {
             auth: {
