@@ -19,6 +19,7 @@ const multer = require('multer');
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
