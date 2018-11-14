@@ -179,17 +179,17 @@ var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
 //=============RECEIVE MAIL==============
 app.post('/webhook', multer().any(), function(req, res) {
     console.log('req body:' );
-    console.log(JSON.stringify(req.body['event-data']));
-    console.log('req content: ', req);
+    console.log(JSON.stringify(req.body));
+    // console.log('req content: ', req);
     
-    axios.get(req.body['event-data'].storage.url, {
-        auth: {
-          username: 'api',
-          password: api_key
-        }
-    }).then(({ data: mail }) => {
-        console.log('mail content: ', mail)
-    }, err => cb(err))
+    // axios.get(req.body['event-data'].storage.url, {
+    //     auth: {
+    //       username: 'api',
+    //       password: api_key
+    //     }
+    // }).then(({ data: mail }) => {
+    //     console.log('mail content: ', mail)
+    // }, err => cb(err))
     res.end();
 });
 //=============END RECEIVE MAIL==========
