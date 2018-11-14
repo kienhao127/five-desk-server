@@ -15,7 +15,7 @@ var utils = require('./utils/Utils');
 
 //=======Mail gun======
 const axios = require('axios');
-import multer from 'multer';
+const multer = require('multer');
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
