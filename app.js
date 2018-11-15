@@ -1,18 +1,17 @@
 var express = require('express'),
     morgan = require('morgan'),
-    bodyParser = require('body-parser');
-    
-const socketIO = require('socket.io');
-const server = express()
-    .listen(4000, () => console.log(`Listening on ${4000}`));
-const io = socketIO(server);
+    bodyParser = require('body-parser'),
+    app = express(),
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
+
+server.listen(4000, () => console.log(`Listening on ${4000}`));
 
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
 var mailCtrl = require('./controllers/mailController');
 var chatRepo = require('./repos/chatRepo');
-var app = express();
 
 // var server = require('http').createServer(app);
 // var io = require('socket.io').listen(server);
@@ -65,7 +64,7 @@ app.use('/visitor', visitorCtrl);
 app.use('/mail', mailCtrl);
 
 //============SOCKET================
-io.on('connection', function (socket) {
+io.sockets.on('connection', function (socket) {
     console.log('a user connected');
     socket.on('disconnect', function () {
         console.log('user disconnected');
