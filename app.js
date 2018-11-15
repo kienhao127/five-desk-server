@@ -8,10 +8,8 @@ var visitorCtrl = require('./controllers/visitorController');
 var chatRepo = require('./repos/chatRepo');
 var app = express();
 
-var server = app.listen(4000)
-var io = require('socket.io').listen(server, () => {
-    console.log(`socket running on port ${4000}`);
-})
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 var utils = require('./utils/Utils');
 
@@ -199,6 +197,10 @@ app.post('/webhook', multer().any(), function(req, res) {
     res.end();
 });
 //=============END RECEIVE MAIL==========
+
+http.listen(4000, function(){
+    console.log('Socket listening on *:4000');
+  });
 
 var port = process.env.PORT || 8888;
 app.listen(port, () => {
