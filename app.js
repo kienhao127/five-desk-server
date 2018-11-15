@@ -8,6 +8,8 @@ var visitorCtrl = require('./controllers/visitorController');
 var chatRepo = require('./repos/chatRepo');
 var app = express();
 
+const path = require('path');
+
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
@@ -17,8 +19,10 @@ var utils = require('./utils/Utils');
 const axios = require('axios');
 const multer = require('multer');
 
-app.use(express.static(__dirname + '/build/index.html'));
-
+app.use(express.static(path.resolve(__dirname + '/build/index.html')));
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+})
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
