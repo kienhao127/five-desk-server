@@ -19,10 +19,11 @@ var utils = require('./utils/Utils');
 const axios = require('axios');
 const multer = require('multer');
 
-app.use(express.static(path.join(__dirname, 'build')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'))
-})
+app.use(express.static(__dirname, 'build'));
+server.get('/', function(req, res, next) {
+    res.sendfile('index.html', { root: __dirname + '/build' });
+});
+
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
