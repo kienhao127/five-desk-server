@@ -2,6 +2,11 @@ var express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser');
     
+const socketIO = require('socket.io');
+const server = express()
+    .listen(4000, () => console.log(`Listening on ${4000}`));
+const io = socketIO(server);
+
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
@@ -9,8 +14,8 @@ var mailCtrl = require('./controllers/mailController');
 var chatRepo = require('./repos/chatRepo');
 var app = express();
 
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+// var server = require('http').createServer(app);
+// var io = require('socket.io').listen(server);
 // io.configure(function () {  
 //     io.set("transports", ["xhr-polling"]); 
 //     io.set("polling duration", 10); 
@@ -24,10 +29,10 @@ const multer = require('multer');
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(__dirname + '/public'));
-app.get('*', (req,res) => res.sendFile(path.join(__dirname+'/public/index.html')))
+app.get('*', (req, res) => res.sendFile(path.join(__dirname + '/public/index.html')))
 
 app.use(function (req, res, next) {
 
@@ -60,27 +65,27 @@ app.use('/visitor', visitorCtrl);
 app.use('/mail', mailCtrl);
 
 //============SOCKET================
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
     console.log('a user connected');
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function () {
         console.log('user disconnected');
     });
 
     //-----ACK-----
-    socket.on('ackMessage', function(params){
+    socket.on('ackMessage', function (params) {
         console.log('message: ', params);
 
         chatRepo.getListTopic(params)
-        .then(value => {
-            io.emit('reAckMessage', value);
-        })
-        .catch(value => {
-            
-        })
+            .then(value => {
+                io.emit('reAckMessage', value);
+            })
+            .catch(value => {
+
+            })
     });
 
     //-----Chat-----
-    socket.on('chat message', function(msg){
+    socket.on('chat message', function (msg) {
         //Nhận tin nhắn từ client
         console.log('message: ', msg);
         chatRepo.insertMessage(msg)
@@ -97,40 +102,40 @@ io.sockets.on('connection', function (socket) {
                 }
                 //------kiểm tra topic có tổn tại?-------
                 chatRepo.getTopicInfo(topic)
-                .then(value => {
-                    console.log('getTopic', value[0]);
-                    //-----CÓ: update
-                    if (value[0] != undefined){
-                        chatRepo.updateTopic(topic)
-                        .then(value => {
-                            console.log('updateTopic', value);
-                            //Gửi tin nhắn đến client
-                            io.emit('chat message', msg);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
-                    //-----KHÔNG: insert
-                    } else {
-                        chatRepo.insertTopic(topic)
-                        .then(value => {
-                            console.log('insertTopic', value);
-                            //Gửi tin nhắn đến client
-                            io.emit('chat message', msg);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                })
+                    .then(value => {
+                        console.log('getTopic', value[0]);
+                        //-----CÓ: update
+                        if (value[0] != undefined) {
+                            chatRepo.updateTopic(topic)
+                                .then(value => {
+                                    console.log('updateTopic', value);
+                                    //Gửi tin nhắn đến client
+                                    io.emit('chat message', msg);
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                })
+                            //-----KHÔNG: insert
+                        } else {
+                            chatRepo.insertTopic(topic)
+                                .then(value => {
+                                    console.log('insertTopic', value);
+                                    //Gửi tin nhắn đến client
+                                    io.emit('chat message', msg);
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
             })
-            .catch((error)=>{
+            .catch((error) => {
                 console.log(error);
             });
-            
+
 
         // //Kiểm tra xem còn tin nhắn chưa đọc hay không
         // var user = utils.verifyToken(msg.token);
@@ -160,7 +165,7 @@ io.sockets.on('connection', function (socket) {
         //     .catch((error)=>{
         //         console.log(error);
         //     });
-        });
+    });
 })
 //============END SOCKET================
 
@@ -178,7 +183,7 @@ var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
 //     subject: 'Testing mailgun api',
 //     text: 'Đây là nội dung mail được gửi từ mailgun!'
 //   };
-  
+
 //   mailgun.messages().send(data, function (error, body) {
 //     console.log(body);
 //   });
@@ -187,11 +192,11 @@ var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
 
 
 //=============RECEIVE MAIL==============
-app.post('/webhook', multer().any(), function(req, res) {
-    console.log('req body:' );
+app.post('/webhook', multer().any(), function (req, res) {
+    console.log('req body:');
     console.log(JSON.stringify(req.body));
     // console.log('req content: ', req);
-    
+
     // axios.get(req.body['event-data'].storage.url, {
     //     auth: {
     //       username: 'api',
@@ -203,10 +208,6 @@ app.post('/webhook', multer().any(), function(req, res) {
     res.end();
 });
 //=============END RECEIVE MAIL==========
-
-server.listen(4000, function(){
-    console.log('listening on *:4000');
-  });
 
 var port = process.env.PORT || 8888;
 app.listen(port, () => {
