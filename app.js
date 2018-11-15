@@ -17,11 +17,12 @@ var utils = require('./utils/Utils');
 const axios = require('axios');
 const multer = require('multer');
 
+app.use(express.static(__dirname + '/build/index.html'));
+
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(express.static(__dirname + '/build'));
 
 app.use(function (req, res, next) {
 
