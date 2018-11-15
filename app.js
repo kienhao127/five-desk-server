@@ -1,12 +1,18 @@
+'use strict';
+
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+
+var http = require('http');
 var express = require('express'),
-    morgan = require('morgan'),
-    bodyParser = require('body-parser'),
-    app = express(),
-    server = require('http').createServer(app),
-    io = require('socket.io').listen(server);
+    app = module.exports.app = express();
 
-server.listen(4000, () => console.log(`Listening on ${4000}`));
-
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);  //pass a http.Server instance
+server.listen(4000, () => {
+    console.log(`socket running on port ${4000}`);
+})//listen on port 80
+  
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
@@ -207,7 +213,6 @@ app.post('/webhook', multer().any(), function (req, res) {
     res.end();
 });
 //=============END RECEIVE MAIL==========
-
 var port = process.env.PORT || 8888;
 app.listen(port, () => {
     console.log(`api running on port ${port}`);
