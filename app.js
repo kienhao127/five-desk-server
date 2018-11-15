@@ -21,8 +21,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(express.static(__dirname + '/public'));
-app.get('*', (req,res) => res.sendFile(path.join(__dirname+'/public/index.html')))
+app.use(express.static(__dirname + '/build'));
 
 app.use(function (req, res, next) {
 
@@ -199,6 +198,8 @@ app.post('/webhook', multer().any(), function(req, res) {
 //=============END RECEIVE MAIL==========
 
 var port = process.env.PORT || 8888;
+
+var socketPort = process.env.PORT || 8080;
 http.listen(4000, function(){
     console.log(`Socket listening on ${4000}`);
   });
