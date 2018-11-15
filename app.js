@@ -20,7 +20,7 @@ const axios = require('axios');
 const multer = require('multer');
 
 app.use(express.static(__dirname + 'build'));
-app.get('/', function(req, res, next) {
+app.get('*', function(req, res, next) {
     res.sendfile('index.html', { root: __dirname + '/build' });
 });
 
