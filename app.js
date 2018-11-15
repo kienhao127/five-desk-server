@@ -9,13 +9,13 @@ var mailCtrl = require('./controllers/mailController');
 var chatRepo = require('./repos/chatRepo');
 var app = express();
 
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-io.configure(function () {  
-    io.set("transports", ["xhr-polling"]); 
-    io.set("polling duration", 10); 
-  });
-  
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
+// io.configure(function () {  
+//     io.set("transports", ["xhr-polling"]); 
+//     io.set("polling duration", 10); 
+//   });
+
 var utils = require('./utils/Utils');
 
 //=======Mail gun======
@@ -60,7 +60,7 @@ app.use('/visitor', visitorCtrl);
 app.use('/mail', mailCtrl);
 
 //============SOCKET================
-io.on('connection', function (socket) {
+io.sockets.on('connection', function (socket) {
     console.log('a user connected');
     socket.on('disconnect', function(){
         console.log('user disconnected');
@@ -204,7 +204,7 @@ app.post('/webhook', multer().any(), function(req, res) {
 });
 //=============END RECEIVE MAIL==========
 
-http.listen(4000, function(){
+server.listen(4000, function(){
     console.log('listening on *:4000');
   });
 
