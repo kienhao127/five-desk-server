@@ -18,8 +18,53 @@ router.post('/insertMail', (req, res) => {
         isSpam: req.body.isSpam,
         replyTo: req.body.replyTo
     }
-    console.log('mail', mail);
     mailRepo.insertMail(mail)
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/updateStatus', (req, res) => {
+    var mail = {
+        mailID: req.body.mailID,
+        statusID: req.body.statusID
+    }
+    mailRepo.updateStatus(mail)
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/updateSpam', (req, res) => {
+    var mail = {
+        mailID: req.body.mailID,
+        isSpam: req.body.isSpam
+    }
+    mailRepo.updateSpam(mail)
         .then(value => {
             console.log('value', value);
 
