@@ -81,7 +81,7 @@ io.on('connection', function (socket) {
     //-----Chat-----
     socket.on('chat message', function(msg){
          //Gửi tin nhắn đến client
-         io.sockets.emit('receive', msg);
+         io.sockets.emit('chat message', msg);
         //Nhận tin nhắn từ client
         console.log('message: ', msg);
         chatRepo.insertMessage(msg)
