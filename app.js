@@ -19,9 +19,9 @@ var utils = require('./utils/Utils');
 const axios = require('axios');
 const multer = require('multer');
 
-app.use(express.static(__dirname + 'build'));
+app.use(express.static(path.join(__dirname, 'build')));
 app.get('*', function(req, res, next) {
-    res.sendFile('index.html', { root: __dirname + '/build' });
+    res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 
 app.use(morgan('dev'));
