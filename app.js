@@ -123,7 +123,6 @@ io.on('connection', function (socket) {
             .catch((error)=>{
                 console.log(error);
             });
-            
 
         // //Kiểm tra xem còn tin nhắn chưa đọc hay không
         // var user = utils.verifyToken(msg.token);
@@ -155,6 +154,9 @@ io.on('connection', function (socket) {
         //     });
         });
 })
+
+setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
+
 //============END SOCKET================
 
 

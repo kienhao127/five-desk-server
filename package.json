@@ -30,6 +30,6 @@
     "node": "8.9.1"
   },
   "scripts": {
-    "start": "port=8888 node app.js"
+    "start": "node app.js"
   }
 }
