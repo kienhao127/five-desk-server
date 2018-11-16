@@ -103,7 +103,7 @@ io.of('/chatsocket').on('connection', function (socket) {
                         .then(value => {
                             console.log('updateTopic', value);
                             //Gửi tin nhắn đến client
-                            io.emit('chat message', msg);
+                            socket.emit('chat message', msg);
                         })
                         .catch(error => {
                             console.log(error);
@@ -114,7 +114,7 @@ io.of('/chatsocket').on('connection', function (socket) {
                         .then(value => {
                             console.log('insertTopic', value);
                             //Gửi tin nhắn đến client
-                            io.emit('chat message', msg);
+                            socket.emit('chat message', msg);
                         })
                         .catch(error => {
                             console.log(error);
