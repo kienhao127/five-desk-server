@@ -1,6 +1,8 @@
 var express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser');
+
+
     
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
@@ -10,8 +12,21 @@ var app = express();
 
 const path = require('path');
 
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+const SocketServer = require('ws').Server;
+const wss = new SocketServer({ app });
+wss.on('connection', (ws) => {
+    console.log('Client connected');
+    ws.on('close', () => console.log('Client disconnected'));
+  });
+  
+  setInterval(() => {
+    wss.clients.forEach((client) => {
+      client.send(new Date().toTimeString());
+    });
+  }, 1000);
+
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
 
 var utils = require('./utils/Utils');
 
@@ -124,6 +139,9 @@ io.on('connection', function (socket) {
                 console.log(error);
             });
 
+            
+    setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
+
         // //Kiểm tra xem còn tin nhắn chưa đọc hay không
         // var user = utils.verifyToken(msg.token);
         // chatRepo.countUnreadMessage(user)
@@ -154,8 +172,6 @@ io.on('connection', function (socket) {
         //     });
         });
 })
-
-setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
 
 //============END SOCKET================
 
@@ -200,12 +216,6 @@ app.post('/webhook', multer().any(), function(req, res) {
 //=============END RECEIVE MAIL==========
 
 var port = process.env.PORT || 8888;
-
-var socketPort = process.env.PORT || 8080;
-http.listen(4000, function(){
-    console.log(`Socket listening on ${4000}`);
-  });
-
 app.listen(port, () => {
     console.log(`api running on port ${port}`);
 })
