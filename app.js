@@ -10,7 +10,7 @@ var app = express();
 
 const path = require('path');
 
-var http = require('https').Server(app);
+var http = require('https').createServer(app);
 var io = require('socket.io')(http);
 
 var utils = require('./utils/Utils');
