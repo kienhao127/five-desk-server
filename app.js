@@ -10,7 +10,7 @@ var app = express();
 
 const path = require('path');
 
-var http = require('https').createServer(app);
+var http = require('https').Server(app);
 var io = require('socket.io')(http);
 
 var utils = require('./utils/Utils');
@@ -202,9 +202,9 @@ app.post('/webhook', multer().any(), function(req, res) {
 
 var port = process.env.PORT || 8888;
 
-var socketPort = process.env.PORT || 8080;
-http.listen(4000, function(){
-    console.log(`Socket listening on ${4000}`);
+var socketPort = process.env.PORT || 4000;
+http.listen(socketPort, function(){
+    console.log(`Socket listening on ${socketPort}`);
   });
 
 app.listen(port, () => {
