@@ -1,48 +1,21 @@
-var express = require('express'),
-    morgan = require('morgan'),
-    bodyParser = require('body-parser');
-
-
-    
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
 var chatRepo = require('./repos/chatRepo');
-var app = express();
 
-const path = require('path');
+var express = require('express'),
+    morgan = require('morgan'),
+    bodyParser = require('body-parser');
 
 const SocketServer = require('ws').Server;
-const wss = new SocketServer({ app });
-wss.on('connection', (ws) => {
-    console.log('Client connected');
-    ws.on('close', () => console.log('Client disconnected'));
-  });
-  
-  setInterval(() => {
-    wss.clients.forEach((client) => {
-      client.send(new Date().toTimeString());
-    });
-  }, 1000);
+const path = require('path');
 
-// var http = require('http').Server(app);
-// var io = require('socket.io')(http);
-
-var utils = require('./utils/Utils');
-
-//=======Mail gun======
-const axios = require('axios');
-const multer = require('multer');
-
-app.use(express.static(path.join(__dirname, 'build')));
-app.get('*', function(req, res, next) {
-    res.sendFile(path.join(__dirname + '/build/index.html'));
-});
+var port = process.env.PORT || 8888;
+var app = express();
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(function (req, res, next) {
 
@@ -63,115 +36,148 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use(express.static(path.join(__dirname, 'build')))
+app.get('*', function (req, res, next) {
+    res.sendFile(path.join(__dirname + '/build/index.html'));
+});
+
 app.use('/user', userCtrl);
 app.use('/chat', chatCtrl);
 app.use('/visitor', visitorCtrl);
 
-//============SOCKET================
-io.on('connection', function (socket) {
-    console.log('a user connected');
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
-    });
-
-    //-----ACK-----
-    socket.on('ackMessage', function(params){
-        console.log('message: ', params);
-
-        chatRepo.getListTopic(params)
-        .then(value => {
-            io.emit('reAckMessage', value);
-        })
-        .catch(value => {
-            
-        })
-    });
-
-    //-----Chat-----
-    socket.on('chat message', function(msg){
-        //Nhận tin nhắn từ client
-        console.log('message: ', msg);
-        chatRepo.insertMessage(msg)
-            .then(value => {
-                console.log(value);
-                var topic = {
-                    LastMessageSendTime: msg.SendTime,
-                    TopicID: msg.TopicID,
-                    id: msg.TopicID,
-                    VisitorName: msg.VisitorName ? msg.VisitorName : msg.SenderID,
-                    UnreadMessageCount: 0,
-                    ServicerID: msg.ServicerID ? msg.ServicerID : null,
-                    CompanyID: msg.CompanyID
-                }
-                //------kiểm tra topic có tổn tại?-------
-                chatRepo.getTopicInfo(topic)
-                .then(value => {
-                    console.log('getTopic', value[0]);
-                    //-----CÓ: update
-                    if (value[0] != undefined){
-                        chatRepo.updateTopic(topic)
-                        .then(value => {
-                            console.log('updateTopic', value);
-                            //Gửi tin nhắn đến client
-                            io.emit('chat message', msg);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
-                    //-----KHÔNG: insert
-                    } else {
-                        chatRepo.insertTopic(topic)
-                        .then(value => {
-                            console.log('insertTopic', value);
-                            //Gửi tin nhắn đến client
-                            io.emit('chat message', msg);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-            })
-            .catch((error)=>{
-                console.log(error);
-            });
-
-            
-    setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
-
-        // //Kiểm tra xem còn tin nhắn chưa đọc hay không
-        // var user = utils.verifyToken(msg.token);
-        // chatRepo.countUnreadMessage(user)
-        //     .then(value => {
-        //         io.emit('unread message', value[0].UnreadMessageCount > 0);
-        //     })
-        //     .catch((error)=>{
-        //         console.log(error);
-        //     });
-
-        //cập nhật là số lượng tin nhắn chưa đọc của 1 topic
-        // chatRepo.getUnreadMessageOfTopic(msg.TopicID)
-        //     .then(value => {
-        //         var topic = {
-        //             unreadCount: value[0].UnreadOfTopic,
-        //             topicID: msg.TopicID,
-        //         }
-        //         chatRepo.updateUnreadMessage(topic)
-        //         .then(value => {
-        //             console.log(value);
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //         })
-        //     })
-        //     .catch((error)=>{
-        //         console.log(error);
-        //     });
-        });
+app.listen(port, () => {
+    console.log(`api running on port ${port}`);
 })
+
+const wss = new SocketServer({ server: app });
+wss.on('connection', (ws) => {
+    console.log('Client connected');
+    ws.on('close', () => console.log('Client disconnected'));
+});
+
+setInterval(() => {
+    wss.clients.forEach((client) => {
+        client.send(new Date().toTimeString());
+    });
+}, 1000);
+
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
+
+// var utils = require('./utils/Utils');
+
+// //=======Mail gun======
+// const axios = require('axios');
+// const multer = require('multer');
+
+
+
+
+//============SOCKET================
+// io.on('connection', function (socket) {
+//     console.log('a user connected');
+//     socket.on('disconnect', function(){
+//         console.log('user disconnected');
+//     });
+
+//     //-----ACK-----
+//     socket.on('ackMessage', function(params){
+//         console.log('message: ', params);
+
+//         chatRepo.getListTopic(params)
+//         .then(value => {
+//             io.emit('reAckMessage', value);
+//         })
+//         .catch(value => {
+
+//         })
+//     });
+
+//     //-----Chat-----
+//     socket.on('chat message', function(msg){
+//         //Nhận tin nhắn từ client
+//         console.log('message: ', msg);
+//         chatRepo.insertMessage(msg)
+//             .then(value => {
+//                 console.log(value);
+//                 var topic = {
+//                     LastMessageSendTime: msg.SendTime,
+//                     TopicID: msg.TopicID,
+//                     id: msg.TopicID,
+//                     VisitorName: msg.VisitorName ? msg.VisitorName : msg.SenderID,
+//                     UnreadMessageCount: 0,
+//                     ServicerID: msg.ServicerID ? msg.ServicerID : null,
+//                     CompanyID: msg.CompanyID
+//                 }
+//                 //------kiểm tra topic có tổn tại?-------
+//                 chatRepo.getTopicInfo(topic)
+//                 .then(value => {
+//                     console.log('getTopic', value[0]);
+//                     //-----CÓ: update
+//                     if (value[0] != undefined){
+//                         chatRepo.updateTopic(topic)
+//                         .then(value => {
+//                             console.log('updateTopic', value);
+//                             //Gửi tin nhắn đến client
+//                             io.emit('chat message', msg);
+//                         })
+//                         .catch(error => {
+//                             console.log(error);
+//                         })
+//                     //-----KHÔNG: insert
+//                     } else {
+//                         chatRepo.insertTopic(topic)
+//                         .then(value => {
+//                             console.log('insertTopic', value);
+//                             //Gửi tin nhắn đến client
+//                             io.emit('chat message', msg);
+//                         })
+//                         .catch(error => {
+//                             console.log(error);
+//                         })
+//                     }
+//                 })
+//                 .catch(error => {
+//                     console.log(error);
+//                 })
+//             })
+//             .catch((error)=>{
+//                 console.log(error);
+//             });
+
+
+//     setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
+
+//         // //Kiểm tra xem còn tin nhắn chưa đọc hay không
+//         // var user = utils.verifyToken(msg.token);
+//         // chatRepo.countUnreadMessage(user)
+//         //     .then(value => {
+//         //         io.emit('unread message', value[0].UnreadMessageCount > 0);
+//         //     })
+//         //     .catch((error)=>{
+//         //         console.log(error);
+//         //     });
+
+//         //cập nhật là số lượng tin nhắn chưa đọc của 1 topic
+//         // chatRepo.getUnreadMessageOfTopic(msg.TopicID)
+//         //     .then(value => {
+//         //         var topic = {
+//         //             unreadCount: value[0].UnreadOfTopic,
+//         //             topicID: msg.TopicID,
+//         //         }
+//         //         chatRepo.updateUnreadMessage(topic)
+//         //         .then(value => {
+//         //             console.log(value);
+//         //         })
+//         //         .catch(err => {
+//         //             console.log(err);
+//         //         })
+//         //     })
+//         //     .catch((error)=>{
+//         //         console.log(error);
+//         //     });
+//         });
+// })
 
 //============END SOCKET================
 
@@ -179,7 +185,7 @@ io.on('connection', function (socket) {
 //------------MAIL GUN--------------
 //=============SEND MAIL==============
 // var mailgun = require("mailgun-js");
-var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
+// var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
 // var DOMAIN = 'fivedesk.tech';
 // var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
@@ -189,7 +195,7 @@ var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
 //     subject: 'Testing mailgun api',
 //     text: 'Đây là nội dung mail được gửi từ mailgun!'
 //   };
-  
+
 //   mailgun.messages().send(data, function (error, body) {
 //     console.log(body);
 //   });
@@ -198,11 +204,11 @@ var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
 
 
 //=============RECEIVE MAIL==============
-app.post('/webhook', multer().any(), function(req, res) {
-    console.log('req body:' );
-    console.log(JSON.stringify(req.body));
+// app.post('/webhook', multer().any(), function (req, res) {
+//     console.log('req body:');
+//     console.log(JSON.stringify(req.body));
     // console.log('req content: ', req);
-    
+
     // axios.get(req.body['event-data'].storage.url, {
     //     auth: {
     //       username: 'api',
@@ -211,11 +217,6 @@ app.post('/webhook', multer().any(), function(req, res) {
     // }).then(({ data: mail }) => {
     //     console.log('mail content: ', mail)
     // }, err => cb(err))
-    res.end();
-});
+//     res.end();
+// });
 //=============END RECEIVE MAIL==========
-
-var port = process.env.PORT || 8888;
-app.listen(port, () => {
-    console.log(`api running on port ${port}`);
-})
