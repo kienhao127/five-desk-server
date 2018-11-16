@@ -56,11 +56,13 @@ app.use('/chat', chatCtrl);
 app.use('/visitor', visitorCtrl);
 
 //============SOCKET================
-io.of('/chatsocket').on('connection', function (socket) {
+io.on('connection', function (socket) {
     console.log('a user connected');
     socket.on('disconnect', function(){
         console.log('user disconnected');
     });
+
+    setInterval(() => socket.emit('time', new Date().toTimeString()), 10000);
 
     //-----ACK-----
     socket.on('ackMessage', function(params){
@@ -75,10 +77,11 @@ io.of('/chatsocket').on('connection', function (socket) {
         })
     });
 
-    setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
 
     //-----Chat-----
     socket.on('chat message', function(msg){
+         //Gửi tin nhắn đến client
+         io.sockets.emit('receive', msg);
         //Nhận tin nhắn từ client
         console.log('message: ', msg);
         chatRepo.insertMessage(msg)
@@ -102,8 +105,7 @@ io.of('/chatsocket').on('connection', function (socket) {
                         chatRepo.updateTopic(topic)
                         .then(value => {
                             console.log('updateTopic', value);
-                            //Gửi tin nhắn đến client
-                            socket.emit('chat message', msg);
+                            // io.emit('chat message', msg);
                         })
                         .catch(error => {
                             console.log(error);
@@ -113,8 +115,7 @@ io.of('/chatsocket').on('connection', function (socket) {
                         chatRepo.insertTopic(topic)
                         .then(value => {
                             console.log('insertTopic', value);
-                            //Gửi tin nhắn đến client
-                            socket.emit('chat message', msg);
+                            // io.emit('chat message', msg);
                         })
                         .catch(error => {
                             console.log(error);
@@ -159,7 +160,6 @@ io.of('/chatsocket').on('connection', function (socket) {
         //     });
         });
 })
-
 
 //============END SOCKET================
 
