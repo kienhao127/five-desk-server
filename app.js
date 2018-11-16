@@ -1,17 +1,20 @@
-var express = require('express'),
-    morgan = require('morgan'),
-    bodyParser = require('body-parser');
-    
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
 var chatRepo = require('./repos/chatRepo');
+
+var express = require('express')
 var app = express();
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
 
 const path = require('path');
 
-var http = require('https').Server(app);
-var io = require('socket.io')(http);
+var port = process.env.PORT || 8888;
+var server = app.listen(port, function(){
+    console.log('Server listening on ' + port);
+});
+var io = require('socket.io').listen(server);
 
 var utils = require('./utils/Utils');
 
@@ -53,7 +56,7 @@ app.use('/chat', chatCtrl);
 app.use('/visitor', visitorCtrl);
 
 //============SOCKET================
-io.on('connection', function (socket) {
+io.of('/chatsocket').on('connection', function (socket) {
     console.log('a user connected');
     socket.on('disconnect', function(){
         console.log('user disconnected');
@@ -199,14 +202,3 @@ app.post('/webhook', multer().any(), function(req, res) {
     res.end();
 });
 //=============END RECEIVE MAIL==========
-
-var port = process.env.PORT || 8888;
-
-var socketPort = process.env.PORT || 4000;
-http.listen(socketPort, function(){
-    console.log(`Socket listening on ${socketPort}`);
-  });
-
-app.listen(port, () => {
-    console.log(`api running on port ${port}`);
-})
