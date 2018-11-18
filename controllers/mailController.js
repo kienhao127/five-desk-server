@@ -82,4 +82,147 @@ router.post('/updateSpam', (req, res) => {
         })
 })
 
+router.post('/getNotCloseByUserID', (req, res) => {
+    var mail = {
+        userID: req.body.userID
+    }
+    mailRepo.getNotCloseByUserID(mail)
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                mail: value,
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/getUnassignedTicket', (req, res) => {
+    mailRepo.getUnassignedTicket()
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                mail: value,
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/getAllNotClose', (req, res) => {
+    mailRepo.getAllNotClose()
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                mail: value,
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/getNewSticket', (req, res) => {
+    mailRepo.getNewSticket()
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                mail: value,
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/getPendingSticket', (req, res) => {
+    mailRepo.getPendingSticket()
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                mail: value,
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/getClosedSticket', (req, res) => {
+    mailRepo.getClosedSticket()
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                mail: value,
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/getDeletedSticket', (req, res) => {
+    mailRepo.getDeletedSticket()
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                mail: value,
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
 module.exports = router;

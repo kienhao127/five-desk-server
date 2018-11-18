@@ -1,6 +1,7 @@
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
+var mailCtrl = require('./controllers/mailController');
 var chatRepo = require('./repos/chatRepo');
 
 var express = require('express')
@@ -54,6 +55,7 @@ app.use(function (req, res, next) {
 app.use('/user', userCtrl);
 app.use('/chat', chatCtrl);
 app.use('/visitor', visitorCtrl);
+app.use('/mail', mailCtrl);
 
 //============SOCKET================
 io.on('connection', function (socket) {
