@@ -4,6 +4,9 @@ var express = require('express');
 var userRepo = require('../repos/userRepo');
 var jwt = require('jsonwebtoken');
 var router = express.Router();
+var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
+var DOMAIN = 'fivedesk.tech';
+var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
 
 router.post('/meFromToken', (req, res) => {
@@ -78,6 +81,9 @@ router.post('/register', (req, res) => {
             userRepo.updateCompanyEmail(company)
             .then(value =>{
                 console.log(value);
+                mailgun.post('/lists', {"address": company.email, "description": "", "name": "Support"}, function (error, body) {
+                    console.log(body);
+                });
             })
             .catch(error => {
                 console.log(error);
