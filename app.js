@@ -171,9 +171,9 @@ io.on('connection', function (socket) {
 app.post('/webhook', multer().any(), function(req, res) {
     console.log('req body:' );
     var mailInfo = {
-        to: rep.body.recipient, //"luongkienhao@fivedesk.tech"
-        sender: rep.body.sender, //"luongkienhao@gmail.com"
-        from: rep.body.from, //"Hào Lương <luongkienhao@gmail.com>"
+        to: req.body.recipient, //"luongkienhao@fivedesk.tech"
+        sender: req.body.sender, //"luongkienhao@gmail.com"
+        from: req.body.from, //"Hào Lương <luongkienhao@gmail.com>"
         subject: req.body.subject,
         text: req.body['stripped-text'], //"rep mail"
         updateTime: req.body.timestamp, //"1542613201"
