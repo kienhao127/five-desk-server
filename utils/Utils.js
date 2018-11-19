@@ -11,7 +11,8 @@ exports.generateToken = function(user) {
         UserID: user.UserID.toString(),
         PhoneNumber: user.PhoneNumber != null ? user.PhoneNumber.toString() : null,
         CompanyID: user.CompanyID,
-        CompanyName: user.CompanyName
+        CompanyName: user.CompanyName,
+        CompanyEmail: user.CompanyEmail
     };
   
     return token = jwt.sign(u, process.env.JWT_SECRET, {

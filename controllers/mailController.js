@@ -226,13 +226,14 @@ router.post('/getDeletedSticket', (req, res) => {
 })
 
 router.post('/sendMail', (req, res) => {
-    
+    //token, to, subject, content, typeID, priorityID, statusID
+    var user = utils.verifyToken(req.body.token);
     var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
     var DOMAIN = 'fivedesk.tech';
     var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
     var mailInfo = {
-        from: req.body.from,
+        from: user.CompanyEmail,
         to: req.body.to,
         subject: req.body.subject,
         text: req.body.content,
@@ -262,7 +263,7 @@ router.post('/sendMail', (req, res) => {
             typeID: req.body.typeID,
             priorityID: req.body.priorityID,
             statusID: req.body.statusID,
-            userID: req.body.userID,
+            userID: user.UserID,
             updateTime: new Date().getTime(),
             isDelete: 0,
             isSpam: 0,

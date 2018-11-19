@@ -1,7 +1,7 @@
 var db = require('../fn/mysql-db');
 
 exports.login = function(u) {
-    var sql = `select u.*, c.CompanyName from user u, company c where u.Email = '${u.email}' and u.Password = '${u.password}' and u.CompanyID = c.CompanyID`;
+    var sql = `select u.*, c.CompanyName, c.CompanyEmail from user u, company c where u.Email = '${u.email}' and u.Password = '${u.password}' and u.CompanyID = c.CompanyID`;
 	return db.load(sql);
 }
 
