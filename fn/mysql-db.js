@@ -3,11 +3,18 @@ var mysql = require('mysql');
 exports.load = function(sql) {
     return new Promise((resolve, reject) => {
         var connection = mysql.createConnection({
-            host: 'us-cdbr-iron-east-01.cleardb.net',
+            // host: 'us-cdbr-iron-east-01.cleardb.net',
+            // port: '3306',
+            // user: 'b375cdf9dcedd3',
+            // password: 'ae0a1f00',
+            // database: 'heroku_ae446112e19ccfa'
+
+            host: '127.0.0.1',
             port: '3306',
-            user: 'b375cdf9dcedd3',
-            password: 'ae0a1f00',
-            database: 'heroku_ae446112e19ccfa'
+            user: 'root',
+            password: '',
+            database: 'website_tuvan'
+
         });
 
         connection.connect();
@@ -25,11 +32,18 @@ exports.load = function(sql) {
 exports.write = function(sql) {
     return new Promise((resolve, reject) => {
         var connection = mysql.createConnection({
-            host: 'us-cdbr-iron-east-01.cleardb.net',
+            // host: 'us-cdbr-iron-east-01.cleardb.net',
+            // port: '3306',
+            // user: 'b375cdf9dcedd3',
+            // password: 'ae0a1f00',
+            // database: 'heroku_ae446112e19ccfa'
+
+            host: '127.0.0.1',
             port: '3306',
-            user: 'b375cdf9dcedd3',
-            password: 'ae0a1f00',
-            database: 'heroku_ae446112e19ccfa'
+            user: 'root',
+            password: '',
+            database: 'website_tuvan'
+
         });
 
         connection.connect();

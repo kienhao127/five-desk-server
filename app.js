@@ -167,40 +167,19 @@ io.on('connection', function (socket) {
 
 
 //------------MAIL GUN--------------
-//=============SEND MAIL==============
-// var mailgun = require("mailgun-js");
-var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
-// var DOMAIN = 'fivedesk.tech';
-// var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
-
-// var data = {
-//     from: 'Luong Kien Hao <luongkienhao@fivedesk.tech>',
-//     to: 'hoangnam26101996@gmail.com',
-//     subject: 'Testing mailgun api',
-//     text: 'Đây là nội dung mail được gửi từ mailgun!'
-//   };
-  
-//   mailgun.messages().send(data, function (error, body) {
-//     console.log(body);
-//   });
-//=============END SEND MAIL==============
-
-
-
 //=============RECEIVE MAIL==============
 app.post('/webhook', multer().any(), function(req, res) {
     console.log('req body:' );
-    console.log(JSON.stringify(req.body));
-    // console.log('req content: ', req);
-    
-    // axios.get(req.body['event-data'].storage.url, {
-    //     auth: {
-    //       username: 'api',
-    //       password: api_key
-    //     }
-    // }).then(({ data: mail }) => {
-    //     console.log('mail content: ', mail)
-    // }, err => cb(err))
+    var mailInfo = {
+        to: rep.body.recipient, //"luongkienhao@fivedesk.tech"
+        sender: rep.body.sender, //"luongkienhao@gmail.com"
+        from: rep.body.from, //"Hào Lương <luongkienhao@gmail.com>"
+        subject: req.body.subject,
+        text: req.body['stripped-text'], //"rep mail"
+        updateTime: req.body.timestamp, //"1542613201"
+        replyTo: req.body['In-Reply-To'], //"<CA+8_AKESrsCaPnaTtLN42m=xazTOMqRoSt=WbwTP-LD8tWKkjw@mail.gmail.com>",
+    }
+    console.log(mailInfo);
     res.end();
 });
 //=============END RECEIVE MAIL==========

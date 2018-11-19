@@ -13,8 +13,13 @@ exports.register = function(u) {
 }
 
 exports.insertCompany = function(name) {
-    var sql = `insert into company(CompanyName) values('${name}')`;
+    var sql = `insert into company(CompanyName, CompanyEmail) values('${name}')`;
     return db.write(sql);
+}
+
+exports.updateCompanyEmail = function(company){
+    var sql = "UPDATE company SET CompanyEmail = '" + company.email + "' WHERE CompanyID = '" + company.companyID + "'";
+    return db.load(sql);
 }
 
 exports.changePassword = function(user){

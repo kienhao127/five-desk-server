@@ -70,6 +70,19 @@ router.post('/login', (req, res) => {
 router.post('/register', (req, res) => {
     userRepo.insertCompany(req.body.company)
         .then(value => {
+            var company = {
+                companyID: value.insertId,
+                email: utils.xoa_dau(req.body.company + value.insertId) + '@fivedesk.tech',
+            }
+
+            userRepo.updateCompanyEmail(company)
+            .then(value =>{
+                console.log(value);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
             var u = {
                 email: req.body.email,
                 password: req.body.password,

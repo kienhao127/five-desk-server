@@ -225,4 +225,66 @@ router.post('/getDeletedSticket', (req, res) => {
         })
 })
 
+router.post('/sendMail', (req, res) => {
+    
+    var api_key = 'key-bbddcadf9073eb563a87ca5632fd3652';
+    var DOMAIN = 'fivedesk.tech';
+    var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
+
+    var mailInfo = {
+        from: req.body.from,
+        to: req.body.to,
+        subject: req.body.subject,
+        text: req.body.content,
+    }
+
+    // var mailInfo = {
+    //     from: 'Luong Kien Hao <luongkienhao@fivedesk.tech>',
+    //     to: 'luongkienhao@gmail.com',
+    //     subject: 'Testing mailgun api',
+    //     text: 'Đây là nội dung mail được gửi từ mailgun!'
+    // }
+
+    var data = {
+        from: mailInfo.from,
+        to: mailInfo.to,
+        subject: mailInfo.subject,
+        text: mailInfo.text
+    };
+    
+    mailgun.messages().send(data, function (error, body) {
+        console.log(body);
+        var mail = {
+            mailID: body.id,
+            subject: mailInfo.subject,
+            content: mailInfo.text,
+            request: mailInfo.to,
+            typeID: req.body.typeID,
+            priorityID: req.body.priorityID,
+            statusID: req.body.statusID,
+            userID: req.body.userID,
+            updateTime: new Date().getTime(),
+            isDelete: 0,
+            isSpam: 0,
+            replyTo: null
+        }
+        mailRepo.insertMail(mail)
+            .then(value => {
+                console.log('value', value);
+    
+                res.statusCode = 201;
+                res.json({
+                    returnCode: 1,
+                    message: 'success'
+                })
+    
+            })
+            .catch(err => {
+                console.log(err);
+                res.statusCode = 500;
+                res.end('View error log on server console');
+            })
+    });
+})
+
 module.exports = router;
