@@ -83,8 +83,10 @@ router.post('/updateSpam', (req, res) => {
 })
 
 router.post('/getNotCloseByUserID', (req, res) => {
+    var user = utils.verifyToken(req.body.token);
     var mail = {
-        userID: req.body.userID
+        userID: user.UserID,
+        companyID: user.CompanyID
     }
     mailRepo.getNotCloseByUserID(mail)
         .then(value => {
@@ -106,7 +108,11 @@ router.post('/getNotCloseByUserID', (req, res) => {
 })
 
 router.post('/getUnassignedTicket', (req, res) => {
-    mailRepo.getUnassignedTicket()
+    var user = utils.verifyToken(req.body.token);
+    var mail = {
+        companyID: user.CompanyID
+    }
+    mailRepo.getUnassignedTicket(mail)
         .then(value => {
             console.log('value', value);
 
@@ -126,7 +132,11 @@ router.post('/getUnassignedTicket', (req, res) => {
 })
 
 router.post('/getAllNotClose', (req, res) => {
-    mailRepo.getAllNotClose()
+    var user = utils.verifyToken(req.body.token);
+    var mail = {
+        companyID: user.CompanyID
+    }
+    mailRepo.getAllNotClose(mail)
         .then(value => {
             console.log('value', value);
 
@@ -146,7 +156,11 @@ router.post('/getAllNotClose', (req, res) => {
 })
 
 router.post('/getNewSticket', (req, res) => {
-    mailRepo.getNewSticket()
+    var user = utils.verifyToken(req.body.token);
+    var mail = {
+        companyID: user.CompanyID
+    }
+    mailRepo.getNewSticket(mail)
         .then(value => {
             console.log('value', value);
 
@@ -166,7 +180,11 @@ router.post('/getNewSticket', (req, res) => {
 })
 
 router.post('/getPendingSticket', (req, res) => {
-    mailRepo.getPendingSticket()
+    var user = utils.verifyToken(req.body.token);
+    var mail = {
+        companyID: user.CompanyID
+    }
+    mailRepo.getPendingSticket(mail)
         .then(value => {
             console.log('value', value);
 
@@ -186,7 +204,11 @@ router.post('/getPendingSticket', (req, res) => {
 })
 
 router.post('/getClosedSticket', (req, res) => {
-    mailRepo.getClosedSticket()
+    var user = utils.verifyToken(req.body.token);
+    var mail = {
+        companyID: user.CompanyID
+    }
+    mailRepo.getClosedSticket(mail)
         .then(value => {
             console.log('value', value);
 
@@ -206,7 +228,11 @@ router.post('/getClosedSticket', (req, res) => {
 })
 
 router.post('/getDeletedSticket', (req, res) => {
-    mailRepo.getDeletedSticket()
+    var user = utils.verifyToken(req.body.token);
+    var mail = {
+        companyID: user.CompanyID
+    }
+    mailRepo.getDeletedSticket(mail)
         .then(value => {
             console.log('value', value);
 
