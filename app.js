@@ -170,13 +170,14 @@ io.on('connection', function (socket) {
 //=============RECEIVE MAIL==============
 app.post('/webhook', multer().any(), function(req, res) {
     console.log('req body:' );
+    console.log(req.body);
     var mailInfo = {
         to: req.body.recipient, //"luongkienhao@fivedesk.tech"
         sender: req.body.sender, //"luongkienhao@gmail.com"
         from: req.body.from, //"Hào Lương <luongkienhao@gmail.com>"
         subject: req.body.subject,
-        text: req.body['stripped-text'], //"rep mail"
-        updateTime: req.body.timestamp, //"1542613201"
+        content: req.body['stripped-text'], //"rep mail"
+        updateTime: req.body.timestamp * 1000, //"1542613201"
         replyTo: req.body['In-Reply-To'], //"<CA+8_AKESrsCaPnaTtLN42m=xazTOMqRoSt=WbwTP-LD8tWKkjw@mail.gmail.com>",
     }
     console.log(mailInfo);
