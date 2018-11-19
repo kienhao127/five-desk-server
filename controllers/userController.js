@@ -81,7 +81,7 @@ router.post('/register', (req, res) => {
             userRepo.updateCompanyEmail(company)
             .then(value =>{
                 console.log(value);
-                mailgun.post('/lists', {"address": company.email, "description": "", "name": "Support"}, function (error, body) {
+                mailgun.post('/lists', {"address": company.email, "description": "", "name": "Support", "access_level": "everyone"}, function (error, body) {
                     console.log(body);
                 });
             })
