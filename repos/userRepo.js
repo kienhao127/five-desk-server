@@ -13,7 +13,7 @@ exports.register = function(u) {
 }
 
 exports.insertCompany = function(name) {
-    var sql = `insert into company(CompanyName, CompanyEmail) values('${name}')`;
+    var sql = `insert into company(CompanyName) values('${name}')`;
     return db.write(sql);
 }
 
