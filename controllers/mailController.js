@@ -267,7 +267,7 @@ router.post('/sendMail', (req, res) => {
             updateTime: new Date().getTime(),
             isDelete: 0,
             isSpam: 0,
-            replyTo: null
+            replyTo: req.body.replyTo != null ? req.body.replyTo : null
         }
         mailRepo.insertMail(mail)
             .then(value => {

@@ -3,6 +3,7 @@ var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
 var mailCtrl = require('./controllers/mailController');
 var chatRepo = require('./repos/chatRepo');
+var mailRepo = require('./repos/mailRepo');
 
 var express = require('express')
 var app = express();
@@ -171,16 +172,50 @@ io.on('connection', function (socket) {
 app.post('/webhook', multer().any(), function(req, res) {
     console.log('req body:' );
     console.log(req.body);
-    var mailInfo = {
-        to: req.body.recipient, //"luongkienhao@fivedesk.tech"
-        sender: req.body.sender, //"luongkienhao@gmail.com"
-        from: req.body.from, //"Hào Lương <luongkienhao@gmail.com>"
-        subject: req.body.subject,
-        content: req.body['stripped-text'], //"rep mail"
-        updateTime: req.body.timestamp * 1000, //"1542613201"
-        replyTo: req.body['In-Reply-To'], //"<CA+8_AKESrsCaPnaTtLN42m=xazTOMqRoSt=WbwTP-LD8tWKkjw@mail.gmail.com>",
-    }
-    console.log(mailInfo);
+
+    // var mail = {
+    //     mailID: req.body['Message-Id'],
+    //     subject: req.body.subject,
+    //     content: req.body.content,
+    //     request: req.body.from,
+    //     typeID: req.body.typeID,
+    //     priorityID: req.body.priorityID,
+    //     statusID: req.body.statusID,
+    //     userID: req.body.userID,
+    //     updateTime: req.body.timestamp * 1000,
+    //     isDelete: 0,
+    //     isSpam: 0,
+    //     replyTo: req.body['In-Reply-To']
+    // }
+
+    mailRepo.getMail(req.body['In-Reply-To'])
+    .then(value => {
+        var mail = value[0];
+        var mailInfo = {
+            mailID: req.body['Message-Id'],
+            subject: req.body.subject,
+            content: req.body.content,
+            request: req.body.from,
+            typeID: mail.TypeId,
+            priorityID: mail.PriorityId,
+            statusID: mail.StatusID,
+            userID: mail.UserId,
+            updateTime: req.body.timestamp * 1000,
+            isDelete: 0,
+            isSpam: 0,
+            replyTo: req.body['In-Reply-To']
+        }
+        mailRepo.insertMail(mailInfo)
+        .then(value => {
+            console.log(value);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    })
+    .catch(error => {
+        console.log(error)
+    })
     res.end();
 });
 //=============END RECEIVE MAIL==========

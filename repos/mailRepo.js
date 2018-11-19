@@ -15,6 +15,11 @@ exports.updateSpam = function(mail){
     return db.write(sql);
 }
 
+exports.getMail = function(mailId){
+    var sql = `select * from mail where MailId = '${mailId}'`;
+    return db.load(sql);
+}
+
 //Chua giai quyet cua ban (StatusId <> 4)
 exports.getNotCloseByUserID = function(mail){
     var sql = `select * from mail where UserID = '${mail.userID}' and StatusId <> '4' and IsDelete = '0'`;
