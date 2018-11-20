@@ -13,7 +13,7 @@ var bodyParser = require('body-parser');
 const path = require('path');
 
 var port = process.env.PORT || 8888;
-var server = app.listen(port, function(){
+var server = app.listen(port, function () {
     console.log('Server listening on ' + port);
 });
 var io = require('socket.io').listen(server);
@@ -25,13 +25,13 @@ const axios = require('axios');
 const multer = require('multer');
 
 app.use(express.static(path.join(__dirname, 'build')));
-app.get('*', function(req, res, next) {
+app.get('*', function (req, res, next) {
     res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use(function (req, res, next) {
@@ -61,30 +61,30 @@ app.use('/mail', mailCtrl);
 //============SOCKET================
 io.on('connection', function (socket) {
     console.log('a user connected');
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function () {
         console.log('user disconnected');
     });
 
     setInterval(() => socket.emit('time', new Date().toTimeString()), 10000);
 
     //-----ACK-----
-    socket.on('ackMessage', function(params){
+    socket.on('ackMessage', function (params) {
         console.log('message: ', params);
 
         chatRepo.getListTopic(params)
-        .then(value => {
-            io.emit('reAckMessage', value);
-        })
-        .catch(value => {
-            
-        })
+            .then(value => {
+                io.emit('reAckMessage', value);
+            })
+            .catch(value => {
+
+            })
     });
 
 
     //-----Chat-----
-    socket.on('chat message', function(msg){
-         //Gửi tin nhắn đến client
-         io.sockets.emit('chat message', msg);
+    socket.on('chat message', function (msg) {
+        //Gửi tin nhắn đến client
+        io.sockets.emit('chat message', msg);
         //Nhận tin nhắn từ client
         console.log('message: ', msg);
         chatRepo.insertMessage(msg)
@@ -101,35 +101,35 @@ io.on('connection', function (socket) {
                 }
                 //------kiểm tra topic có tổn tại?-------
                 chatRepo.getTopicInfo(topic)
-                .then(value => {
-                    console.log('getTopic', value[0]);
-                    //-----CÓ: update
-                    if (value[0] != undefined){
-                        chatRepo.updateTopic(topic)
-                        .then(value => {
-                            console.log('updateTopic', value);
-                            // io.emit('chat message', msg);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
-                    //-----KHÔNG: insert
-                    } else {
-                        chatRepo.insertTopic(topic)
-                        .then(value => {
-                            console.log('insertTopic', value);
-                            // io.emit('chat message', msg);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                })
+                    .then(value => {
+                        console.log('getTopic', value[0]);
+                        //-----CÓ: update
+                        if (value[0] != undefined) {
+                            chatRepo.updateTopic(topic)
+                                .then(value => {
+                                    console.log('updateTopic', value);
+                                    // io.emit('chat message', msg);
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                })
+                            //-----KHÔNG: insert
+                        } else {
+                            chatRepo.insertTopic(topic)
+                                .then(value => {
+                                    console.log('insertTopic', value);
+                                    // io.emit('chat message', msg);
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
             })
-            .catch((error)=>{
+            .catch((error) => {
                 console.log(error);
             });
 
@@ -161,7 +161,7 @@ io.on('connection', function (socket) {
         //     .catch((error)=>{
         //         console.log(error);
         //     });
-        });
+    });
 })
 
 //============END SOCKET================
@@ -169,8 +169,8 @@ io.on('connection', function (socket) {
 
 //------------MAIL GUN--------------
 //=============RECEIVE MAIL==============
-app.post('/webhook', multer().any(), function(req, res) {
-    console.log('req body:' );
+app.post('/webhook', multer().any(), function (req, res) {
+    console.log('req body:');
     console.log(req.body);
 
     // var mail = {
@@ -188,44 +188,41 @@ app.post('/webhook', multer().any(), function(req, res) {
     //     replyTo: req.body['In-Reply-To']
     // }
 
-    if (req.body['In-Reply-To'] != undefined){
+    if (req.body['In-Reply-To'] != undefined) {
         mailRepo.getMail(req.body['In-Reply-To'])
-        .then(value => {
-            var mail = value[0];
-            var mailInfo = {
-                mailID: req.body['Message-Id'],
-                subject: req.body.subject,
-                content: req.body.content,
-                request: req.body.from,
-                typeID: mail.TypeId,
-                priorityID: mail.PriorityId,
-                statusID: mail.StatusID,
-                userID: mail.UserId,
-                updateTime: req.body.timestamp * 1000,
-                isDelete: 0,
-                isSpam: 0,
-                replyTo: req.body['In-Reply-To']
-            }
-            mailRepo.insertMail(mailInfo)
             .then(value => {
-                console.log(value);
+                var mail = value[0];
+                var mailInfo = {
+                    mailID: req.body['Message-Id'],
+                    subject: req.body.subject,
+                    content: req.body['stripped-text'],
+                    request: req.body.sender,
+                    typeID: mail.TypeId,
+                    priorityID: mail.PriorityId,
+                    statusID: mail.StatusID,
+                    userID: mail.UserId,
+                    updateTime: req.body.timestamp * 1000,
+                    isDelete: 0,
+                    isSpam: 0,
+                    replyTo: req.body['In-Reply-To']
+                }
+                mailRepo.insertMail(mailInfo)
+                    .then(value => {
+                        console.log(value);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
             })
             .catch(error => {
-                console.log(error);
+                console.log(error)
             })
-        })
-        .catch(error => {
-            console.log(error)
-        })
     } else {
-        mailRepo.getMail(req.body['In-Reply-To'])
-    .then(value => {
-        var mail = value[0];
         var mailInfo = {
             mailID: req.body['Message-Id'],
             subject: req.body.subject,
-            content: req.body.content,
-            request: req.body.from,
+            content: req.body['stripped-text'],
+            request: req.body.sender,
             typeID: 1,
             priorityID: 1,
             statusID: 1,
@@ -233,21 +230,17 @@ app.post('/webhook', multer().any(), function(req, res) {
             updateTime: req.body.timestamp * 1000,
             isDelete: 0,
             isSpam: 0,
-            replyTo: req.body['In-Reply-To']
+            replyTo: null
         }
         mailRepo.insertMail(mailInfo)
-        .then(value => {
-            console.log(value);
-        })
-        .catch(error => {
-            console.log(error);
-        })
-    })
-    .catch(error => {
-        console.log(error)
-    })
+            .then(value => {
+                console.log(value);
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
-    
+
     res.end();
 });
 //=============END RECEIVE MAIL==========
