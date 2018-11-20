@@ -188,7 +188,37 @@ app.post('/webhook', multer().any(), function(req, res) {
     //     replyTo: req.body['In-Reply-To']
     // }
 
-    mailRepo.getMail(req.body['In-Reply-To'])
+    if (req.body['In-Reply-To'] != undefined){
+        mailRepo.getMail(req.body['In-Reply-To'])
+        .then(value => {
+            var mail = value[0];
+            var mailInfo = {
+                mailID: req.body['Message-Id'],
+                subject: req.body.subject,
+                content: req.body.content,
+                request: req.body.from,
+                typeID: mail.TypeId,
+                priorityID: mail.PriorityId,
+                statusID: mail.StatusID,
+                userID: mail.UserId,
+                updateTime: req.body.timestamp * 1000,
+                isDelete: 0,
+                isSpam: 0,
+                replyTo: req.body['In-Reply-To']
+            }
+            mailRepo.insertMail(mailInfo)
+            .then(value => {
+                console.log(value);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    } else {
+        mailRepo.getMail(req.body['In-Reply-To'])
     .then(value => {
         var mail = value[0];
         var mailInfo = {
@@ -196,10 +226,10 @@ app.post('/webhook', multer().any(), function(req, res) {
             subject: req.body.subject,
             content: req.body.content,
             request: req.body.from,
-            typeID: mail.TypeId,
-            priorityID: mail.PriorityId,
-            statusID: mail.StatusID,
-            userID: mail.UserId,
+            typeID: 1,
+            priorityID: 1,
+            statusID: 1,
+            userID: null,
             updateTime: req.body.timestamp * 1000,
             isDelete: 0,
             isSpam: 0,
@@ -216,6 +246,8 @@ app.post('/webhook', multer().any(), function(req, res) {
     .catch(error => {
         console.log(error)
     })
+    }
+    
     res.end();
 });
 //=============END RECEIVE MAIL==========
