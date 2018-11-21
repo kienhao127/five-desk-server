@@ -182,7 +182,7 @@ app.post('/webhook', multer().any(), function (req, res) {
                 var mailInfo = {
                     mailID: req.body['Message-Id'],
                     subject: req.body.subject,
-                    content: req.body['stripped-text'].split('/r/n/r')[0],
+                    content: req.body['stripped-text'].split("[\\r\\n\\r\\n]+")[0],
                     request: req.body.sender,
                     typeID: mail.TypeID,
                     priorityID: mail.PriorityId,
