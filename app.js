@@ -191,6 +191,7 @@ app.post('/webhook', multer().any(), function (req, res) {
     if (req.body['In-Reply-To'] != undefined) {
         mailRepo.getMail(req.body['In-Reply-To'])
             .then(value => {
+                console.log('get mail: ', value);
                 var mail = value[0];
                 var mailInfo = {
                     mailID: req.body['Message-Id'],
