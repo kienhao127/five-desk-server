@@ -191,7 +191,7 @@ app.post('/webhook', multer().any(), function (req, res) {
                     updateTime: req.body.timestamp * 1000,
                     isDelete: 0,
                     isSpam: 0,
-                    replyTo: rootMailId,
+                    replyTo: mail.ReplyTo != '' ? rootMailId : mail.ReplyTo,
                     companyID: mail.CompanyId
                 }
                 io.on('connection', function (socket) {
