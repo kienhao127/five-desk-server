@@ -173,8 +173,9 @@ app.post('/webhook', multer().any(), function (req, res) {
     console.log('req body:');
     console.log(req.body);
 
-    if (req.body['In-Reply-To'] != undefined) {
-        mailRepo.getMail(req.body['In-Reply-To'])
+    if (req.body['References'] != undefined) {
+        var rootMailId = req.body['References'].split(' ')[0];
+        mailRepo.getMail(rootMailId)
             .then(value => {
                 console.log('get mail: ', value);
                 var mail = value[0];
@@ -190,7 +191,7 @@ app.post('/webhook', multer().any(), function (req, res) {
                     updateTime: req.body.timestamp * 1000,
                     isDelete: 0,
                     isSpam: 0,
-                    replyTo: req.body['In-Reply-To'],
+                    replyTo: rootMailId,
                     companyID: mail.CompanyId
                 }
                 io.on('connection', function (socket) {
