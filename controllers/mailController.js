@@ -293,7 +293,7 @@ router.post('/sendMail', (req, res) => {
             updateTime: new Date().getTime(),
             isDelete: 0,
             isSpam: 0,
-            replyTo: req.body.replyTo != null ? req.body.replyTo : null,
+            replyTo: req.body.replyTo != null ? req.body.replyTo : '',
             companyID: user.CompanyID
         }
         mailRepo.insertMail(mail)
@@ -313,6 +313,21 @@ router.post('/sendMail', (req, res) => {
                 res.end('View error log on server console');
             })
     });
+})
+
+router.post('/getMail', (req, res) => {
+    mailRepo.getMailWithReply(req.body.mailId)
+            .then(value => {
+                res.statusCode = 201;
+                res.json({
+                    listMail: value,
+                    returnCode: 1,
+                    message: 'success'
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
 })
 
 module.exports = router;

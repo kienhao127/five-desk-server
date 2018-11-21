@@ -61,3 +61,8 @@ exports.getDeletedSticket = function(mail){
     var sql = `select * from mail where IsDelete = '1' and CompanyId = '${mail.companyID}' and ReplyTo = ''`;
     return db.load(sql);
 }
+
+exports.getMailWithReply = function(mailId){
+    var sql = `select * from mail where MailId = '${mailId}' or ReplyTo = '${mailId}'`;
+    return db.load(sql);
+}
