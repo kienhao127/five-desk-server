@@ -193,8 +193,8 @@ app.post('/webhook', multer().any(), function (req, res) {
                     replyTo: req.body['In-Reply-To'],
                     companyID: mail.CompanyId
                 }
-                socket.on('incomingMail', function (msg) {
-                    //Gửi tin nhắn đến client
+                io.on('connection', function (socket) {
+                    setInterval(() => socket.emit('time', new Date().toTimeString()), 10000);
                     io.sockets.emit('incomingMail');
                 });
 
