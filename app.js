@@ -173,21 +173,6 @@ app.post('/webhook', multer().any(), function (req, res) {
     console.log('req body:');
     console.log(req.body);
 
-    // var mail = {
-    //     mailID: req.body['Message-Id'],
-    //     subject: req.body.subject,
-    //     content: req.body.content,
-    //     request: req.body.from,
-    //     typeID: req.body.typeID,
-    //     priorityID: req.body.priorityID,
-    //     statusID: req.body.statusID,
-    //     userID: req.body.userID,
-    //     updateTime: req.body.timestamp * 1000,
-    //     isDelete: 0,
-    //     isSpam: 0,
-    //     replyTo: req.body['In-Reply-To']
-    // }
-
     if (req.body['In-Reply-To'] != undefined) {
         mailRepo.getMail(req.body['In-Reply-To'])
             .then(value => {
@@ -208,6 +193,11 @@ app.post('/webhook', multer().any(), function (req, res) {
                     replyTo: req.body['In-Reply-To'],
                     companyID: mail.CompanyId
                 }
+                socket.on('incomingMail', function (msg) {
+                    //Gửi tin nhắn đến client
+                    io.sockets.emit('incomingMail');
+                });
+
                 mailRepo.insertMail(mailInfo)
                     .then(value => {
                         console.log(value);
