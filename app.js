@@ -205,7 +205,8 @@ app.post('/webhook', multer().any(), function (req, res) {
                     updateTime: req.body.timestamp * 1000,
                     isDelete: 0,
                     isSpam: 0,
-                    replyTo: req.body['In-Reply-To']
+                    replyTo: req.body['In-Reply-To'],
+                    companyID: mail.CompanyId
                 }
                 mailRepo.insertMail(mailInfo)
                     .then(value => {
@@ -231,7 +232,8 @@ app.post('/webhook', multer().any(), function (req, res) {
             updateTime: req.body.timestamp * 1000,
             isDelete: 0,
             isSpam: 0,
-            replyTo: null
+            replyTo: null,
+            companyID: mail.CompanyId
         }
         mailRepo.insertMail(mailInfo)
             .then(value => {
