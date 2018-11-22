@@ -50,10 +50,10 @@ exports.getNotCloseByUserID = function(mail){
                     , m.IsSpam
                     , m.ReplyTo
                     , m.CompanyId
-                FROM mail m INNER JOIN mailtype mt ON m.TypeID = mt.ID
-                            INNER JOIN status s ON m.StatusId = s.ID
-                            INNER JOIN priority p ON m.PriorityId
-                WHERE m.UserID = '${mail.userID}' AND m.StatusId <> '4' AND m.IsDelete = '0' AND m.CompanyId = '${mail.companyID}'
+                 FROM mail m INNER JOIN mailtype mt ON m.TypeID = mt.ID
+                             INNER JOIN status s ON m.StatusId = s.ID
+                             INNER JOIN priority p ON m.PriorityId
+                WHERE m.UserID = '${mail.userID}' AND m.StatusId <> '4' AND m.IsDelete = '0' AND m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''
                 ORDER BY m.UpdateTime DESC`;
     return db.load(sql);
 }
@@ -76,7 +76,7 @@ exports.getUnassignedTicket = function(mail){
                 FROM mail m INNER JOIN mailtype mt ON m.TypeID = mt.ID
                             INNER JOIN status s ON m.StatusId = s.ID
                             INNER JOIN priority p ON m.PriorityId
-                WHERE m.UserID IS NULL and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}'
+                WHERE m.UserID IS NULL and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''
                 ORDER BY m.UpdateTime DESC`;
     return db.load(sql);
 }
@@ -99,7 +99,7 @@ exports.getAllNotClose = function(mail){
                 FROM mail m INNER JOIN mailtype mt ON m.TypeID = mt.ID
                             INNER JOIN status s ON m.StatusId = s.ID
                             INNER JOIN priority p ON m.PriorityId
-                WHERE m.StatusId <> '4' and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}'
+                WHERE m.StatusId <> '4' and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''
                 ORDER BY m.UpdateTime DESC`;
     return db.load(sql);
 }
@@ -122,7 +122,7 @@ exports.getNewSticket = function(mail){
                 FROM mail m INNER JOIN mailtype mt ON m.TypeID = mt.ID
                             INNER JOIN status s ON m.StatusId = s.ID
                             INNER JOIN priority p ON m.PriorityId
-                WHERE m.StatusId = '1' and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}'
+                WHERE m.StatusId = '1' and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''
                 ORDER BY m.UpdateTime DESC`;
     return db.load(sql);
 }
@@ -145,7 +145,7 @@ exports.getPendingSticket = function(mail){
                 FROM mail m INNER JOIN mailtype mt ON m.TypeID = mt.ID
                             INNER JOIN status s ON m.StatusId = s.ID
                             INNER JOIN priority p ON m.PriorityId
-                WHERE m.StatusId = '3' and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}'
+                WHERE m.StatusId = '3' and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''
                 ORDER BY m.UpdateTime DESC`;
     return db.load(sql);
 }
@@ -168,7 +168,7 @@ exports.getClosedSticket = function(mail){
                 FROM mail m INNER JOIN mailtype mt ON m.TypeID = mt.ID
                             INNER JOIN status s ON m.StatusId = s.ID
                             INNER JOIN priority p ON m.PriorityId
-                WHERE m.StatusId = '4' and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}'
+                WHERE m.StatusId = '4' and m.IsDelete = '0' and m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''
                 ORDER BY m.UpdateTime DESC`;
     return db.load(sql);
 }
@@ -191,7 +191,7 @@ exports.getDeletedSticket = function(mail){
                 FROM mail m INNER JOIN mailtype mt ON m.TypeID = mt.ID
                             INNER JOIN status s ON m.StatusId = s.ID
                             INNER JOIN priority p ON m.PriorityId
-                WHERE m.IsDelete = '1' and m.CompanyId = '${mail.companyID}'
+                WHERE m.IsDelete = '1' and m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''
                 ORDER BY m.UpdateTime DESC`;
     return db.load(sql);
 }
