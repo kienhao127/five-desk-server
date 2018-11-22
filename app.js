@@ -210,31 +210,31 @@ app.post('/webhook', multer().any(), function (req, res) {
     } else {
         var mail = null;
         mailRepo.getCompanyID(req.body['recipient'])
-        .then(value => {
-            mail = value[0];
-        })
-        var mailInfo = {
-            mailID: req.body['Message-Id'],
-            subject: req.body.subject,
-            content: req.body['stripped-text'],
-            request: req.body.sender,
-            typeID: 1,
-            priorityID: 1,
-            statusID: 1,
-            userID: null,
-            updateTime: req.body.timestamp * 1000,
-            isDelete: 0,
-            isSpam: 0,
-            replyTo: null,
-            companyID: mail.CompanyId
-        }
-        io.sockets.emit('incomingMail');
-        mailRepo.insertMail(mailInfo)
             .then(value => {
-                console.log(value);
-            })
-            .catch(error => {
-                console.log(error);
+                mail = value[0];
+                var mailInfo = {
+                    mailID: req.body['Message-Id'],
+                    subject: req.body.subject,
+                    content: req.body['stripped-text'],
+                    request: req.body.sender,
+                    typeID: 1,
+                    priorityID: 1,
+                    statusID: 1,
+                    userID: null,
+                    updateTime: req.body.timestamp * 1000,
+                    isDelete: 0,
+                    isSpam: 0,
+                    replyTo: null,
+                    companyID: mail.CompanyId
+                }
+                io.sockets.emit('incomingMail');
+                mailRepo.insertMail(mailInfo)
+                    .then(value => {
+                        console.log(value);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
             })
     }
 
