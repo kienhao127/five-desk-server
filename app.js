@@ -224,7 +224,7 @@ app.post('/webhook', multer().any(), function (req, res) {
                     updateTime: req.body.timestamp * 1000,
                     isDelete: 0,
                     isSpam: 0,
-                    replyTo: null,
+                    replyTo: '',
                     companyID: mail.CompanyID
                 }
                 io.sockets.emit('incomingMail');
