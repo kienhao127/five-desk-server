@@ -43,6 +43,6 @@ exports.getListUser = function(u){
 }
 
 exports.getUserInfo = function(u) {
-    var sql = `select u.*, c.CompanyName from user u, company c where UserID = '${u.userID}' and u.CompanyID = c.CompanyID`;
+    var sql = `select u.*, c.CompanyName, c.CompanyEmail from user u, company c where UserID = '${u.userID}' and u.CompanyID = c.CompanyID`;
 	return db.load(sql);
 }
