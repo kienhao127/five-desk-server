@@ -194,10 +194,7 @@ app.post('/webhook', multer().any(), function (req, res) {
                     replyTo: mail.ReplyTo != '' ? mail.ReplyTo : rootMailId,
                     companyID: mail.CompanyId
                 }
-                io.on('connection', function (socket) {
-                    setInterval(() => socket.emit('time', new Date().toTimeString()), 10000);
-                    io.sockets.emit('incomingMail');
-                });
+                io.sockets.emit('incomingMail');
 
                 mailRepo.insertMail(mailInfo)
                     .then(value => {
