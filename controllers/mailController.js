@@ -400,4 +400,32 @@ router.post('/getMail', (req, res) => {
             })
 })
 
+router.post('/countQuantityMail', (req, res) => {
+    var user = utils.verifyToken(req.body.token);
+    var mail = {
+        userID: user.UserID,
+        companyID: user.CompanyID
+    }
+    mailRepo.countQuantityMail(mail)
+            .then(value => {
+                var count = [
+                    { content: 'Ticket chưa giải quyết của bạn', number: value[0].notCloseByUserID },
+                    { content: 'Ticket chưa chuyển nhượng', number: value[0].unassignedTicket },
+                    { content: 'Tất cả ticket chưa giải quyết', number: value[0].allNotClose },
+                    { content: 'Ticket mới', number: value[0].newTicket },
+                    { content: 'Ticket chờ duyệt', number: value[0].pendingTicket },
+                    { content: 'Ticket đã xóa', number: value[0].deletedTicket }
+                ]
+                res.statusCode = 201;
+                res.json({
+                    countMail: count,
+                    returnCode: 1,
+                    message: 'success'
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+})
+
 module.exports = router;

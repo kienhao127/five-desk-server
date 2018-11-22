@@ -200,3 +200,37 @@ exports.getMailWithReply = function(mailId){
     var sql = `select * from mail where MailId = '${mailId}' or ReplyTo = '${mailId}' order by UpdateTime desc`;
     return db.load(sql);
 }
+
+exports.countQuantityMail = function(mail){
+    var sql = `SELECT SUM(CASE
+                            WHEN m.UserID = '${mail.userID}' AND m.StatusId <> '4' AND m.IsDelete = '0' THEN 1
+                            ELSE 0
+                        END) AS notCloseByUserID
+                    , SUM(CASE
+                            WHEN m.UserID IS NULL and m.IsDelete = '0' THEN 1
+                            ELSE 0
+                        END) AS unassignedTicket
+                    , SUM(CASE
+                            WHEN m.StatusId <> '4' and m.IsDelete = '0' THEN 1
+                            ELSE 0
+                        END) AS allNotClose
+                    , SUM(CASE
+                            WHEN m.StatusId = '1' and m.IsDelete = '0' THEN 1
+                            ELSE 0
+                        END) AS newTicket
+                    , SUM(CASE
+                            WHEN m.StatusId = '3' and m.IsDelete = '0' THEN 1
+                            ELSE 0
+                        END) AS pendingTicket
+                    , SUM(CASE
+                            WHEN m.StatusId = '4' and m.IsDelete = '0' THEN 1
+                            ELSE 0
+                        END) AS closedTicket
+                    , SUM(CASE
+                            WHEN m.IsDelete = '1' THEN 1
+                            ELSE 0
+                        END) AS deletedTicket
+                 FROM mail m
+                WHERE m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''`;
+    return db.load(sql);
+}
