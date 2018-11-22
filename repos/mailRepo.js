@@ -234,3 +234,8 @@ exports.countQuantityMail = function(mail){
                 WHERE m.CompanyId = '${mail.companyID}' AND m.ReplyTo = ''`;
     return db.load(sql);
 }
+
+exports.getCompanyID = function(companyEmail){
+    var sql = `SELECT * FROM company WHERE CompanyEmail = '${companyEmail}'`;
+    return db.load(sql);
+}

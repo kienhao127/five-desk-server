@@ -208,6 +208,11 @@ app.post('/webhook', multer().any(), function (req, res) {
                 console.log(error)
             })
     } else {
+        var mail = null;
+        mailRepo.getCompanyID(req.body['recipient'])
+        .then(value => {
+            mail = value[0];
+        })
         var mailInfo = {
             mailID: req.body['Message-Id'],
             subject: req.body.subject,
@@ -223,6 +228,7 @@ app.post('/webhook', multer().any(), function (req, res) {
             replyTo: null,
             companyID: mail.CompanyId
         }
+        io.sockets.emit('incomingMail');
         mailRepo.insertMail(mailInfo)
             .then(value => {
                 console.log(value);
