@@ -59,6 +59,52 @@ router.post('/updateStatus', (req, res) => {
         })
 })
 
+router.post('/updateType', (req, res) => {
+    var mail = {
+        mailID: req.body.mailID,
+        typeID: req.body.typeID
+    }
+    mailRepo.updateType(mail)
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/updatePriority', (req, res) => {
+    var mail = {
+        mailID: req.body.mailID,
+        priorityID: req.body.priorityID
+    }
+    mailRepo.updatePriority(mail)
+        .then(value => {
+            console.log('value', value);
+
+            res.statusCode = 201;
+            res.json({
+                returnCode: 1,
+                message: 'success'
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
 router.post('/updateSpam', (req, res) => {
     var mail = {
         mailID: req.body.mailID,

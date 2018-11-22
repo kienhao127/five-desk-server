@@ -10,6 +10,16 @@ exports.updateStatus = function(mail){
     return db.write(sql);
 }
 
+exports.updateType = function(mail){
+    var sql = `update mail set TypeID = '${mail.typeID}' where MailId = '${mail.mailID}'`;
+    return db.write(sql);
+}
+
+exports.updatePriority = function(mail){
+    var sql = `update mail set PriorityId = '${mail.priorityID}' where MailId = '${mail.mailID}'`;
+    return db.write(sql);
+}
+
 exports.updateSpam = function(mail){
     var sql = `update mail set IsSpam = '${mail.isSpam}' where MailId = '${mail.mailID}'`;
     return db.write(sql);
