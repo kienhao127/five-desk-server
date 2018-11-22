@@ -225,7 +225,7 @@ app.post('/webhook', multer().any(), function (req, res) {
                     isDelete: 0,
                     isSpam: 0,
                     replyTo: null,
-                    companyID: mail.CompanyId
+                    companyID: mail.CompanyID
                 }
                 io.sockets.emit('incomingMail');
                 mailRepo.insertMail(mailInfo)
