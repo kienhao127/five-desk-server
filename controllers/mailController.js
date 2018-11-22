@@ -414,6 +414,7 @@ router.post('/countQuantityMail', (req, res) => {
                     { content: 'Tất cả ticket chưa giải quyết', number: value[0].allNotClose },
                     { content: 'Ticket mới', number: value[0].newTicket },
                     { content: 'Ticket chờ duyệt', number: value[0].pendingTicket },
+                    { content: 'Ticket đã hoàn tất', number: value[0].closedTicket },
                     { content: 'Ticket đã xóa', number: value[0].deletedTicket }
                 ]
                 res.statusCode = 201;
