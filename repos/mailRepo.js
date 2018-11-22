@@ -20,6 +20,11 @@ exports.updatePriority = function(mail){
     return db.write(sql);
 }
 
+exports.deleteMail = function(mailID){
+    var sql = `update mail set IsDelete = '1' where MailId = '${mailID}'`;
+    return db.write(sql);
+}
+
 exports.updateSpam = function(mail){
     var sql = `update mail set IsSpam = '${mail.isSpam}' where MailId = '${mail.mailID}'`;
     return db.write(sql);

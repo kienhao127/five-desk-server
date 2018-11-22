@@ -128,6 +128,30 @@ router.post('/updateSpam', (req, res) => {
         })
 })
 
+router.post('/deleteMail', (req, res) => {
+    var isDeleteAll = true;
+    for (var i = 0; i < req.body.listMailID.length; i++){
+        mailRepo.deleteMail(req.body.listMailID[i])
+        .then(value => {
+            console.log('value', value);
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+            return;
+        })
+    }
+    if (isDeleteAll){
+        res.statusCode = 201;
+        res.json({
+            returnCode: 1,
+            message: 'success'
+        })
+    }
+
+})
+
 router.post('/getNotCloseByUserID', (req, res) => {
     var user = utils.verifyToken(req.body.token);
     var mail = {
