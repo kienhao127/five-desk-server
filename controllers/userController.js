@@ -43,9 +43,9 @@ router.post('/login', (req, res) => {
             var user = value[0];
             var message = '';
             var returnCode = 0;
-            var token = utils.generateToken(user);
             res.statusCode = 201;
-            if(user != undefined) {
+            if(user != undefined) {   
+                var token = utils.generateToken(user);
                 message = 'login success';
                 returnCode = 1;
 
