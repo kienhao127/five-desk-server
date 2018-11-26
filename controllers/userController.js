@@ -44,6 +44,7 @@ router.post('/login', (req, res) => {
             var message = '';
             var returnCode = 0;
             var token = utils.generateToken(user);
+            res.statusCode = 201;
             if(user != undefined) {
                 message = 'login success';
                 returnCode = 1;
@@ -52,16 +53,19 @@ router.post('/login', (req, res) => {
                     message = 'inactive account';
                     returnCode = 3;
                 }
+                res.json({
+                    returnCode: returnCode,
+                    message: message,
+                    user: user,
+                    token: token
+                })
             } else {
                 message = 'login fail';
+                res.json({
+                    returnCode: returnCode,
+                    message: message,
+                })
             }
-            res.statusCode = 201;
-            res.json({
-                returnCode: returnCode,
-                message: message,
-                user: user,
-                token: token
-            })
         })
         .catch(err => {
             console.log(err);
