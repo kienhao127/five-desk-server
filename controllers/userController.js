@@ -44,7 +44,7 @@ router.post('/login', (req, res) => {
             var message = '';
             var returnCode = 0;
             var token = utils.generateToken(user);
-            if(user != null) {
+            if(user != undefined) {
                 message = 'login success';
                 returnCode = 1;
 
